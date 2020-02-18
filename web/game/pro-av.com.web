@@ -1,0 +1,29 @@
+ProAV:
+The best antivirus for keeping your system safe and secure.
+
+Developed by the net's best engineers in cyber security,
+ProAV is the best choice when it comes to a professional antivirus.
+
+ProAV can be purchased for a fee of 100β.
+To purchase, simply pass "confirm" as an arg.
+<run>
+	if (args[1] == "confirm") {
+		content = `Thank you for choosing ProAV!
+Please wait while we process your payment.`;
+
+		const cmd = await game.ai.runcmd("bits", ["transfer", "ProAV", 100], [], pl, sys);
+		if (cmd && cmd.startsWith("¬g[¬*¬GSUCCESS¬*¬g]¬*")) {
+			const p = await game.db.get("players", "ProAV");
+			const s = (await game.db.filter({ip:p.main_system}, "systems")).pop();
+
+			const idx = s.software.push({
+				name: "ProAV",
+				type: "antivirus",
+				tier: 1,
+				installed: false
+			})-1;
+
+			await game.ai.runcmd("software", ["transfer", idx.toString(), sys.ip, sys.pass], [], p, s);
+		}
+	}
+</run>

@@ -1,0 +1,12 @@
+Enable scripts to use this page.
+<run>
+	const hope = await game.db.get("game", "t1_hope");
+	if (hope == null) {
+		content = "¬RDevelopment mode enabled.¬*";
+		return;
+	}
+
+	content = `¬RFailure¬*
+¬rUnable to contact the server at ${hope.server} to complete the request.¬*`;
+	content = game.lib.corrupt(content);
+</run>

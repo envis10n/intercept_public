@@ -1,0 +1,3 @@
+<run>
+	content = game.lib.corrupt("This is a massive chunk of text. This text also happens to be corrupted. Can you read it?", 100);
+</run>

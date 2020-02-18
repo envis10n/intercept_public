@@ -1,0 +1,14 @@
+Enable scripts to use this page.
+<run>
+	const loststar = await game.db.get("game", "t2_loststar");
+	if (loststar == null) {
+		content = "¬RDevelopment mode enabled.¬*";
+		return;
+	}
+
+	if (args[1] && args[1] == loststar.password) {
+		return content = `Unresolved errors present:\nServer at ${loststar.server} is unresponsive.`;
+	} else if (args[1])
+		return content = "Password incorrect.";
+	content = "Password required.";
+</run>

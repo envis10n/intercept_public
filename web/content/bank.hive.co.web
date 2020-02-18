@@ -1,0 +1,14 @@
+Enable scripts to use this page.
+<run>
+	const main = await game.db.get("systems", "hive_bank_main");
+	if (main == null) {
+		content = "¬RDevelopment mode enabled.¬*";
+		return;
+	}
+
+	content = [
+		`¬gEstablished connection to ${main.ip}¬*`,
+		"¬gAttempting to authorise...¬*",
+		"¬rResponse: 403¬*"
+	].join("\n");
+</run>

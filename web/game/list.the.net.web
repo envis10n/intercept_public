@@ -1,0 +1,51 @@
+This service requires scripts to run.
+<run>
+	const sites = {
+		"ARMWELL":[
+			"armwell.ml"
+		],
+		"ATOM":[
+			"atom.net",
+			"ctrl.atom.net"
+		],
+		"BLACKWEB":[
+			"blackweb.xyz",
+			"contracts.blackweb.xyz",
+			"forum.blackweb.xyz"
+		],
+		"HIVE":[
+			"hive.co",
+			"bank.hive.co"
+		],
+		"LOSTSTAR":[
+			"loststar.org"
+		],
+		"UNITY":[
+			"unity.xyz",
+			"crawler.unity.xyz"
+		],
+		"VOID":[
+			"void.co",
+			"ravage.void.co"
+		],
+		"ZERODAY":[
+			"pro-av.com",
+			"zeroday.org",
+			"contracts.zeroday.org"
+		],
+		"DEFUNCT":[
+			...fs.readdirSync("./web/t1").map(dn=>dn.split(".web")[0]).filter(dn=>!dn.startsWith("admin")),
+			...fs.readdirSync("./web/derelict").map(dn=>dn.split(".web")[0]),
+		]
+	}
+
+	content = `<${"run"}>content = game.lib.corrupt(content, 1)</${"run"}>`;
+	//content = ""
+	for (let b in sites) {
+		if (content) content += "\n\n";
+		content += `[${b}]`;
+		for (const d of sites[b])
+			content += `\n¬g${d}¬*`;
+	}
+	content = content.replace("\n", "");
+</run>

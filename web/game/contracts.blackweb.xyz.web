@@ -1,0 +1,160 @@
+Enable scripts to use this page.
+<run>
+	content = `web contracts.blackweb.xyz [Contract ID]
+`;
+
+	function cActType(type) {
+		let act = "";
+		switch (type) {
+			case "bitsSteal":
+				act = "Steal bits";
+				break;
+			case "swSteal":
+				act = "Steal software";
+				break;
+			case "fileDelete":
+				act = "File deletion";
+				break;
+		}
+		return act;
+	}
+	function cActSummary(type) {
+		let sum = "";
+		switch (type) {
+			case "bitsSteal":
+				sum = `I need you to steal bits off our competitor's system.
+You may keep the bits after the contract is complete.`;
+				break;
+			case "swSteal":
+				sum = `I need you to steal prototype software off our competitor's system.
+You may keep the software after the contract is complete.`;
+				break;
+			case "fileDelete":
+				sum = "I need you to delete sensitive information from a system.";
+				break;
+		}
+		return sum;
+	}
+
+	async function cSummary(c, a) {
+		let r = `Contract ${c.id}
+`;
+		if (c.available)
+			r += `Args: claim
+`;
+		else
+			r += `Args: cancel
+`;
+		r += `
+Action
+${cActType(c.type)}
+`;
+		r += `
+Summary
+${cActSummary(c.type)}
+`;
+		if (c.sys) {
+			let ip = await game.db.get("systems", c.sys);
+			ip = ip.ip;
+
+			r += `
+Target
+${ip}
+`;
+			if (c.fileName)
+				r += `
+File
+${c.fileName}
+`;
+		}
+		r += `
+Reward
+${c.reward}β`;
+
+		return r;
+	}
+
+	const contracts = await game.db.filter({}, "contracts");
+
+	const avc = contracts.filter(c=>c.available);
+
+	let so = await game.db.filter({main_system:sys.ip}, "players");
+	if (!so.length) {
+		content = "Failed to authenticate system";
+		return;
+	}
+	so = so.pop();
+
+	const t = contracts.find(c=>c.user==so.id);
+
+	if (t) {
+		if (args[1] == "cancel") {
+			t.available = true;
+			delete t.user;
+			await game.db.set("contracts", t.id, t);
+			content = "Contract cancelled.";
+			return;
+		}
+
+		let complete = false;
+
+		let tar;
+		if (t.sys)
+			tar = await game.db.get("systems", t.sys);
+
+		switch (t.type) {
+			case "bitsSteal":
+				if (tar.bits <= 0)
+					complete = true;
+				break;
+			case "fileDelete":
+				if (!(tar.fs.work && tar.fs.work[t.fileName]))
+					complete = true;
+				break;
+			case "swSteal":
+				if (tar.software.length <= 0)
+					complete = true;
+				break;
+		}
+
+		if (complete) {
+			const stud = await game.db.get("players", "BlackWebBot");
+			const studSys = (await game.db.filter({ip:stud.main_system}, "systems")).pop();
+
+			studSys.bits += t.reward;
+			await game.ai.runcmd("bits", ["transfer", pl.id, t.reward], [], stud, studSys);
+
+			if (t.sys)
+				await game.db.delete("systems", t.sys);
+			await game.db.delete("contracts", t.id);
+
+			content = "Contract complete.";
+			return;
+		}
+
+		content = `Contract in progress:
+
+${await cSummary(t, true)}`;
+		return;
+	} else {
+		if (args[1] && contracts.find(c=>c.available&&c.id==args[1])) {
+			const c = contracts.find(c=>c.available&&c.id==args[1]);
+			if (args[2] == "claim") {
+				game.contracts.gen(c, so.id);
+				content = "Contract claimed.";
+				return;
+			}
+			content = await cSummary(c, true);
+			return;
+		}
+
+		let e = false;
+		for (let c of avc) {
+			if (!e) e = true;
+			content += `
+[${c.id}] ${cActType(c.type)} for ${c.reward}β`;
+		}
+		if (!e) content += `
+No contracts available currently.`;
+	}
+</run>

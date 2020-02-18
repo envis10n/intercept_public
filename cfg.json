@@ -1,0 +1,19 @@
+{
+	"name":"local testing server",
+	"server":{
+		"ip":"::",
+		"port1":13370,
+		"port2":13373
+	},
+	"db":{
+		"name":"intercept_dev",
+		"tables":[
+			"game",
+			"players",
+			"systems",
+			"corps",
+			"contracts",
+			"chats"
+		]
+	}
+}

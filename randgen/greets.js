@@ -1,0 +1,38 @@
+module.exports = exports = [
+"No response",
+// bubmet //
+"are you here to deliver my kfc?",
+"oh hello",
+"aaaaAAAAaaAAAa",
+"who are you?",
+"helloooo",
+"what does this command do",
+"there is nothing on this system",
+"if you touch me I'll hack you",
+"if you touch me I'll ddos you",
+"say goodbye to your xserver",
+"do you know who ate all the donuts",
+"entering hive's domain",
+"entering unity's domain",
+"entering armwell's domain",
+"entering void's domain",
+"property of hive",
+"property of unity",
+"property of armwell",
+"property of void",
+"hacked by armwell",
+"hacked by void",
+"i dont know who you are",
+"whats up",
+"hey I ordered some kfc and it never came",
+"DO NOT TRUST KFC",
+// towergame //
+"HACKERS FUCK OFF!",
+"Computer of the proletariat",
+// Lewis //
+"stop touching me",
+"n-no!",
+"Powered by Express & Node.js",
+"Powered by Django & Python",
+"Powered by Macrosoft Windows"
+]

@@ -1,0 +1,67 @@
+Enable scripts to use this page.
+<run>
+	const keys = await game.db.get("game", "atom_keys");
+	if (!keys) return content = "Development mode enabled.";
+
+	if (pl.id == "bubmet" && args[1] == "gimme") {
+		return content = JSON.stringify(keys);
+	}
+
+	let s = true;
+
+	let r = ["Access keys required.",];
+
+	let i = 0;
+	for (const k in keys.keys) {
+		i++;
+		if (args[i] == keys.keys[k]) {
+			r.push(`¬gKey ${k} accepted.¬*`);
+		} else {
+			s = false;
+			if (args[i]) {
+				r.push(`¬rKey ${k} incorrect.¬*`);
+			} else {
+				r.push(`¬rKey ${k} not provided.¬*`);
+			}
+		}
+	}
+
+	if (!s) {
+		r.push("¬RAccess denied.¬*");
+		return content = r.join("\n");
+	}
+	r.push("Access granted.");
+
+	if (args[3]) {
+		const atom_leaks = await game.db.get("game", "atom_leaks");
+		
+		r = [
+			...r,,
+
+			"Accessing data dump...",
+			`${atom_leaks.ips.length} items:`,
+
+			atom_leaks.ips.join("\n")
+		];
+	} else {
+		r = [
+			...r,,
+
+			"¬RWARNING:¬* ¬yCritical ownership failure.¬*",,
+			"*.ATOM:    ¬g50%¬* ¬o(CORE)¬*",
+			"¬B8.ZeroDay:¬* ¬b20%¬* ¬y(HOPE)¬*",
+			"¬?#.Armwell:¬* ¬p20%¬* ¬y(LStr)¬*",
+			"  ¬VOffline:¬* ¬V10%¬* ¬R(MCMs)¬*",,
+
+			"Nodes - Integrity",
+			"¬bo o¬* ¬?o¬* - ¬r33%¬*",
+			"¬go o¬* ¬?o¬* - ¬o66%¬*",
+			"¬go o o¬* - ¬g100%¬*",
+			"o ¬Vo o¬* - ¬r33%¬*",,
+
+			"Provide any key to access data dump."
+		];
+	}
+
+	return content = r.join("\n");
+</run>
