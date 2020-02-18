@@ -6,41 +6,46 @@ const crypto = require("crypto");
 
 const lib = {};
 
-lib.gen = (len=6)=>{
+// More secure Math.random
+lib.random = () => {
+	return parseInt(crypto.randomBytes(8).toString("hex"), 16) / 18446744073709552000;
+}
+
+lib.gen = (len = 6) => {
 	let ch = "abcdefghijklmnopqrstuvwxyz";
-	ch += ch.toUpperCase()+"0123456789";
+	ch += ch.toUpperCase() + "0123456789";
 	let s = "";
-	for (let i = 0; i<len; i++) s += ch[Math.floor(Math.random()*ch.length)];
+	for (let i = 0; i < len; i++) s += ch[Math.floor(lib.random() * ch.length)];
 	return s;
 }
 
-lib.gen_hex = (len=4)=>{
+lib.gen_hex = (len = 4) => {
 	const hx = "0123456789abcdef"
 	let s = "";
-	for (let i = 0; i<len; i++)
-		s += hx[Math.floor(Math.random()*hx.length)];
+	for (let i = 0; i < len; i++)
+		s += hx[Math.floor(lib.random() * hx.length)];
 	return s;
 }
 
-lib.gen_hash = (tohash, salt=lib.gen(32))=>{
+lib.gen_hash = (tohash, salt = lib.gen(32)) => {
 	const hmac = crypto.createHmac("sha512", salt);
 	hmac.update(tohash);
 	return hmac.digest("hex");
 }
 
-lib.junk = len=>{
+lib.junk = len => {
 	let r = "";
-	for (let i = 0; i<len; i++)
-		r += String.fromCharCode(Math.floor(Math.random()*500)+500);
+	for (let i = 0; i < len; i++)
+		r += String.fromCharCode(Math.floor(lib.random() * 500) + 500);
 	return r;
 }
-lib.corrupt = (s, ct=Math.floor(Math.random()*2)+1)=>{
+lib.corrupt = (s, ct = Math.floor(lib.random() * 2) + 1) => {
 	s = s.split("");
-	for (let i = 0; i<ct+1; i++) {
-		let ix = Math.floor(Math.random()*s.length);
-		const crc = Math.floor(Math.random()*2);
+	for (let i = 0; i < ct + 1; i++) {
+		let ix = Math.floor(lib.random() * s.length);
+		const crc = Math.floor(lib.random() * 2);
 		let cs = "";
-		for (let x = ix; x<ix+crc; x++)
+		for (let x = ix; x < ix + crc; x++)
 			if (s[x])
 				cs += s[x];
 		s.splice(ix, crc)
@@ -49,71 +54,71 @@ lib.corrupt = (s, ct=Math.floor(Math.random()*2)+1)=>{
 	return s.join("");
 }
 
-lib.explode = (str="")=>{
-	return [...str].map(s=>lib.shuffle(parseInt(s.charCodeAt(0)).toString(2))).join("")
+lib.explode = (str = "") => {
+	return [...str].map(s => lib.shuffle(parseInt(s.charCodeAt(0)).toString(2))).join("")
 }
 
-lib.compare = (i1, i2)=>{
+lib.compare = (i1, i2) => {
 	if (!i1) return false;
 	if (!i2) return false;
 
 	if (i1.length != i2.length) return false;
 
 	let r = true;
-	for (let i = 0; i<i1.length; i++)
-		if (r && i1[i]!=i2[i]) r = false;
+	for (let i = 0; i < i1.length; i++)
+		if (r && i1[i] != i2[i]) r = false;
 	return r;
 }
 
-lib.valid_login = (user, pass)=>{
+lib.valid_login = (user, pass) => {
 	const ur = /[^_a-zA-Z0-9]/;
 
 	// Validation for both values //
-	let o = {username:user, password:pass};
+	let o = { username: user, password: pass };
 	for (const p in o) {
 		if (!o[p])
-			return {success:false, error:`No ${p} provided.`};   
+			return { success: false, error: `No ${p} provided.` };
 		if (typeof o[p] != "string")
-			return {success:false, error:`Invalid ${p}.`};
+			return { success: false, error: `Invalid ${p}.` };
 	}
 
 	// Username validation //
 	if (user.length > 30)
-		return {success:false, error:"Username is too long."};
+		return { success: false, error: "Username is too long." };
 	if (ur.test(user))
-		return {success:false, error:"Invalid username."};
-	
+		return { success: false, error: "Invalid username." };
+
 	// Password validation //
 	if (pass.length > 255)
-		return {success:false, error:"Password is too long."};
+		return { success: false, error: "Password is too long." };
 	if (pass.length < 1)
-		return {success:false, error:"Password is too short."};
+		return { success: false, error: "Password is too short." };
 
-	return {success:true};
+	return { success: true };
 }
 
-lib.shuffle = (ar)=>{
+lib.shuffle = (ar) => {
 	let j = false;
 	if (typeof ar == "string") {
 		j = true;
 		ar = ar.split("");
 	}
 
-	ar = ar.sort(()=>Math.random()>Math.random());
+	ar = ar.sort(() => lib.random() > lib.random());
 
-	return j?ar.join(""):ar;
+	return j ? ar.join("") : ar;
 }
 
-lib.select = (ar=[], ct, pl=true)=>{
-	if (ct == undefined) ct = Math.floor(Math.random()*(ar.length+1));
+lib.select = (ar = [], ct, pl = true) => {
+	if (ct == undefined) ct = Math.floor(lib.random() * (ar.length + 1));
 
 	const r = [];
 	const p = [...ar];
 
-	for (let i = 0; i<ct; i++) {
+	for (let i = 0; i < ct; i++) {
 		if (!p.length) p = [...ar];
 
-		const idx = Math.floor(Math.random()*p.length);
+		const idx = Math.floor(lib.random() * p.length);
 
 		r.push(p[idx]);
 
